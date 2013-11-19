@@ -3,7 +3,8 @@
 # A shell script to interface with tuningFork.c
 
 if [[ ! -f tf ]]; then # create the executable file
-	if [[ ! gcc -o tf tuningFork.c ]]; then # failed compilation
+	gcc -o tf tuningFork.c
+	if [[ $? = 0 ]]; then # failed compilation
 		echo "Compilation of tuningFork.c failed"
 		echo "Exiting with status (1)"
 		exit 1
