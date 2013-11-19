@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# file to properly compile tuningFork.c using gcc
+# Warning: do not change the name of tuningFork.c
+
+gcc -o tf tuningFork.c
+exit 0
