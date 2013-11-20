@@ -9,7 +9,8 @@ November 2013
 
 ********************************************/
 #include <stdio.h>
-
+#include <stdint.h>
+#include <math.h>
 
 void genFile(double freq, double time, char* fname);
 
@@ -43,6 +44,6 @@ int main()
 
 void genFile(double freq, double time, char* fname)
 {
-
+	int16_t sample;
 	return; // DEBUG
 }
