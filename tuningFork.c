@@ -32,7 +32,7 @@ int main()
 	printf("You entered <%s> as your file name\n", fname);
 
 	// Generate the file
-	genFile(freq, time, fname);
+	genFile(freq, duration, fname);
 
 	return 0;
 }
