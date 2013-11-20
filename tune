@@ -2,6 +2,24 @@
 
 # A shell script to interface with tuningFork.c
 
+helpMenu()
+{
+# prints helpMenu output
+cat << HELPMESSAGE
+Usage: tune [OPTION]...
+
+Creates a .wav file with single frequency
+OPTIONS:
+  -f                specify frequency (default = 440Hz)
+  -h, --help        display this help menu
+HELPMESSAGE
+} # call exit(1) after function call
+
+# Default values
+freq=440
+duration=10
+fname="A440.wav"
+
 if [[ ! -f tf ]]; then # create the executable file
 	gcc -o tf tuningFork.c
 	if [[ $? = 0 ]]; then # failed compilation
@@ -13,6 +31,16 @@ fi
 
 # ./tf executable should exist
 
-# rest is left to implement
+# possibly change variables
+
+# output variables to stdout piped to ./tf
+echoString="$freq\n"
+echoString="$duration\n"
+echoString="$fname\n"
+# perhaps more variables
+
+# -en interprets escape sequences and ensures only 1 newline at end
+# redirect output to nowhere
+echo -en "$echoString" | ./tf >/dev/null
 
 exit 0
