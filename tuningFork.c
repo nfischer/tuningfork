@@ -12,7 +12,7 @@ November 2013
 #include <stdint.h>
 #include <math.h>
 
-void genFile(double freq, double time, char* fname);
+#define PI 3.141592653
 
 int main()
 {
@@ -38,12 +38,44 @@ int main()
 	return 0;
 }
 
-
-
 // I'll let you start on this function, Freitag
 
-void genFile(double freq, double time, char* fname)
+typedef struct {
+		int16_t *sample; /* pointer to memory storing list of 16-bit signed samples */
+}PCM; 
+
+PCM *genSampleChunk(double duration)
 {
-	int16_t sample;
-	return; // DEBUG
+	PCM *sampleList;
+
+	if(!(image = (IMAGE *)malloc(sizeof(IMAGE)))) /* if malloc can't allocate enough memory, return NULL */
+	{
+		return NULL;
+	}
+
+	if(!(sampleList->sample = (int16_t*)malloc(sizeof(int16_t) * 44100 * duration))) /* if malloc can't allocate enough memory, return NULL */
+	{
+		return NULL;
+	}
+
+	return sampleList;
+}
+
+PCM *genSampleList(double freq, double duration)
+{
+	PCM *sampleList; /* pointer to list of 16-bit samples */
+	int i;			 /* counter for loop that generates consecutive 16-bit samples */
+
+	sampleList = genSampleChunk(duration);
+
+	for (i = 0; i < (44100 * duration); i++)
+	{
+		sampleList->sample[i] = sin(2 * PI * i / freq);
+	}
+
+	return sampleList;
+}
+
+void genFile(double freq, double duration, char* fname)
+{
 }
