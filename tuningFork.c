@@ -48,7 +48,7 @@ PCM *genSampleChunk(double duration)
 {
 	PCM *sampleList;
 
-	if(!(image = (IMAGE *)malloc(sizeof(IMAGE)))) /* if malloc can't allocate enough memory, return NULL */
+	if(!(sampleList = (PCM*)malloc(sizeof(PCM)))) /* if malloc can't allocate enough memory, return NULL */
 	{
 		return NULL;
 	}
