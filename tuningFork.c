@@ -19,6 +19,7 @@ int main()
 {
 	double freq, duration;
 	char fname[50]; // arbitrary file name limit
+	// fix arbitrary limit to be nonarbitrary
 
 	// get user input
 	printf("Input desired frequency (Hz): ");
