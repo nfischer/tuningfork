@@ -63,6 +63,6 @@ echoString="$freq\n$duration\n$fname\n"
 
 # -en interprets escape sequences and ensures only 1 newline at end
 # redirect output to black hole
-echo -en "$echoString" #| ./tf >/dev/null
+echo -en "$echoString" | ./tf >/dev/null
 
 exit 0
