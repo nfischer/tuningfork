@@ -38,7 +38,8 @@ int main()
 	printf("Enter desired file name: ");
 	scanf("%s", fname);
 
-	/* check for valid input values
+	/* Check for valid input values
+
 		MIN_FREQ = 0
 		MAX_FREQ = 22050 Hz
 		MIN_DURATION = 0 
@@ -62,10 +63,26 @@ int main()
 		shouldExit = 1;
 	}
 
-
+	// exit with proper status
 	if (shouldExit == 1) /* should exit with status (1) */
 		exit(1);
 
+
+	/* Check for proper file name extension */
+
+	int nameLen = strlen(fname);
+	// DEBUG
+	printf("nameLen for %s is %d\n", fname, nameLen);
+	int shouldExtend = 0;
+	if (nameLen < 5) // too short to be valid name
+		shouldExtend = 1;
+	else if ( 0 ) // last 4 characters aren't ".wav"
+		// DEBUG false in if statement
+		shouldExtend = 1;
+
+	// Append the .wav extension
+	if (shouldExtend == 1)
+		strcpy(fname, strcat(fname, ".wav") );
 
 	// DEBUG (check user input)
 	printf("You entered %lf Hz freq\n", freq);
