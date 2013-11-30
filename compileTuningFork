@@ -4,5 +4,5 @@
 # Warning: do not change the name of tuningFork.c
 # Should compile under both Mac and Linux
 
-gcc -o tf tuningFork.c
-exit 0
+returnStatus=$(gcc -o tf tuningFork.c)
+exit $returnStatus
