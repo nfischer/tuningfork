@@ -58,6 +58,7 @@ while getopts "hf:d:n:" OPTION; do
 done
 
 
+
 # output variables to stdout piped to ./tf
 echoString="$freq\n$duration\n$fname\n"
 
