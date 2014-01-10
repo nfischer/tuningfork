@@ -2,6 +2,7 @@
 
 # A shell script to interface with tuningFork.c
 
+
 helpMenu()
 {
 # prints helpMenu output
@@ -9,11 +10,12 @@ cat >&2 << HELPMESSAGE
 Usage: tune [OPTION]...
 
 Creates a .wav file with single frequency
+
 OPTIONS:
   -f                specify frequency (default = 440Hz)
   -d                specify time duration (default = 10s)
   -n                specify file name (default = A440.wav)
-  -h		        display this help menu
+  -h, --help        display this help menu
 HELPMESSAGE
 } # call exit(1) after function call
 
@@ -33,6 +35,10 @@ fi
 
 # ./tf executable should exist
 
+if [ "$1" == "--help" ]; then
+	helpMenu # function call
+	exit 0
+fi
 # possibly change variables
 
 while getopts "hf:d:n:" OPTION; do
