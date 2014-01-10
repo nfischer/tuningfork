@@ -4,5 +4,5 @@
 # Warning: do not change the name of tuningFork.c
 # Should compile under both Mac and Linux
 
-gcc -o tf tuningFork.c # echo to stdout or stderr
+gcc -o tf -Wall tuningFork.c # echo to stdout or stderr
 exit $? # status of gcc
