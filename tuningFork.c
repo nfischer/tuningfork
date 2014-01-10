@@ -67,22 +67,27 @@ int main()
 	if (shouldExit == 1) /* should exit with status (1) */
 		exit(1);
 
-
 	/* Check for proper file name extension */
 
 	int nameLen = strlen(fname);
-	// DEBUG
-	printf("nameLen for %s is %d\n", fname, nameLen);
-	int shouldExtend = 0;
-	if (nameLen < 5) // too short to be valid name
-		shouldExtend = 1;
-	else if ( 0 ) // last 4 characters aren't ".wav"
-		// DEBUG false in if statement
+	char nameV = fname[nameLen-1];
+	char nameA = fname[nameLen-2];
+	char nameW = fname[nameLen-3];
+	char nameP = fname[nameLen-4];
+	int shouldExtend;
+	if (nameLen > 4) // long enough to be valid name
+	{
+		if (nameP == '.' && nameW == 'w' && nameA == 'a' && nameV == 'v') // last 4 characters are ".wav"
+			shouldExtend = 0; // File name meets requirements and does not need .wav appending
+		else
+			shouldExtend = 1;
+	}
+	else
 		shouldExtend = 1;
 
 	// Append the .wav extension
 	if (shouldExtend == 1)
-		strcpy(fname, strcat(fname, ".wav") );
+		strcat(fname, ".wav");
 
 	// DEBUG (check user input)
 	printf("You entered %lf Hz freq\n", freq);
