@@ -26,6 +26,15 @@ const double MAX_DURATION = 60 * 100; /* 100 minutes */
 
 void genFile(double freq, double time, char* fname);
 
+void debugOutput(double freq, double duration, char* fname)
+{
+	fprintf(stderr, "You entered %lf Hz freq\n", freq);
+	fprintf(stderr, "You entered %lf s duration\n", duration);
+	fprintf(stderr, "You entered <%s> as your file name\n", fname);
+	return;
+}
+
+
 int main()
 {
 	double freq, duration;
@@ -92,9 +101,7 @@ int main()
 		strcat(fname, ".wav");
 
 	// DEBUG (check user input)
-	printf("You entered %lf Hz freq\n", freq);
-	printf("You entered %lf s duration\n", duration);
-	printf("You entered <%s> as your file name\n", fname);
+	debugOutput(freq, duration, fname);
 
 	// Generate the file
 	genFile(freq, duration, fname);
