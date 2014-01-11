@@ -57,7 +57,7 @@ int main()
 		MAX_DURATION = 60 * 100 s = 100 minutes
 	*/
 
-	int shouldExit=0;
+	int shouldExit = 0;
 	if (freq <= MIN_FREQ || freq > MAX_FREQ)
 	{
 		fprintf(stderr,"ERROR: You must input a frequency value in the range %d < frequency <= %d. Exiting with status (1)\n", (int)MIN_FREQ, (int)MAX_FREQ);
@@ -73,14 +73,22 @@ int main()
 		fprintf(stderr,"ERROR: You must input a nonempty file name. Exiting with status (1)\n");
 		shouldExit = 1;
 	}
-
+	int nameLen = strlen(fname); /* Catches any invalid characters in the file name */
+	for(int i = 0; i < nameLen; i++)
+	{
+		if(fname[i] == '/' || fname[i] == '\0')
+		{
+			fprintf(stderr,"ERROR: Invalid character(s) in file name. Exiting with status (1)\n");
+			shouldExit = 1;
+			break;
+		}
+	}
 	// exit with proper status
 	if (shouldExit == 1) /* should exit with status (1) */
 		exit(1);
 
 	/* Check for proper file name extension */
 
-	int nameLen = strlen(fname);
 	char nameV = fname[nameLen-1];
 	char nameA = fname[nameLen-2];
 	char nameW = fname[nameLen-3];
