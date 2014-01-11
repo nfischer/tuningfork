@@ -1,8 +1,7 @@
 tuningfork
 ==========
 
-Generates a .wav file of specified duration, frequency, filename, and
-other parameters.
+Generates a .wav file of specified duration, frequency, and file name.
 
 Files
 -----
@@ -33,7 +32,7 @@ finished project.
 Usage
 -----
 
-### Using the executable tf
+### Using the executable *tf*
 Example prompts and input:
 ```
 $ ./tf
@@ -47,10 +46,10 @@ name. Simply enter these values when prompted. Frequency and duration can
 take decimal values with the precision of a double. Filename is currently
 limited to 50 characters maximum.
 
-### using the tune bash script
+### Using the *tune* bash script
 Example:
 ```
-$ ./tune -n "other.wav"
+$ ./tune -n "other.wav" # no output to terminal
 $
 ```
 This script interfaces with the tf executable file. It will compile it if
@@ -60,8 +59,8 @@ named "a.wav" that has duration 10 seconds and frequency A=440Hz.
 You can change the default name, frequency, and/or duration with the
 following options:
 ```
-    -f                specify frequency (default = 440Hz)
-    -d                specify time duration (default = 10s)
-    -n                specify file name (default = A440.wav)
-    -h, --help        display this help menu
+-f                specify frequency (default = 440Hz)
+-d                specify time duration (default = 10s)
+-n                specify file name (default = A440.wav)
+-h, --help        display this help menu
 ```
