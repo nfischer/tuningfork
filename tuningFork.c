@@ -38,7 +38,7 @@ void debugOutput(double freq, double duration, char* fname)
 int main()
 {
 	double freq, duration;
-	char fname[256]; // UNIX file name length limit
+	char fname[255]; // longest name supported on linux
 
 	// get user input
 	printf("Input desired frequency (Hz): ");
@@ -72,10 +72,15 @@ int main()
 		fprintf(stderr,"ERROR: You must input a nonempty file name. Exiting with status (1)\n");
 		shouldExit = 1;
 	}
-	int nameLen = strlen(fname); /* Catches any invalid characters in the file name */
-	for(int i = 0; i < nameLen; i++)
+
+	int nameLen = strlen(fname);
+	/* Catches the zero byte in the file name */
+
+
+	int i; // iterator
+	for(i=0; i < nameLen; i++)
 	{
-		if(fname[i] == '/' || fname[i] == '\0')
+		if(fname[i] == '/')
 		{
 			fprintf(stderr,"ERROR: Invalid character(s) in file name. Exiting with status (1)\n");
 			shouldExit = 1;
@@ -120,8 +125,8 @@ int main()
 
 void genFile(double freq, double time, char* fname)
 {
-	int16_t sample = 44100;	//	Sample rate of audio (44.1 KHz)
-	
+	//int16_t sample = 44100;	//	Sample rate of audio (44.1 KHz)
+
 	return; // DEBUG
 }
 
