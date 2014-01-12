@@ -38,8 +38,7 @@ void debugOutput(double freq, double duration, char* fname)
 int main()
 {
 	double freq, duration;
-	char fname[50]; // arbitrary file name limit
-	// fix arbitrary limit to be nonarbitrary
+	char fname[256]; // UNIX file name length limit
 
 	// get user input
 	printf("Input desired frequency (Hz): ");
