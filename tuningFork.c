@@ -122,16 +122,8 @@ void checkInputFormat(double freq, double duration, char* fname)
     /* Catches the zero byte in the file name */
 
     int i; // iterator
-    for(i=0; i < nameLen; i++)
-    {
-        if(fname[i] == '/')
-        {
-            fprintf(stderr,"ERROR: Invalid character(s) in file name. Exiting with status (1)\n");
-            shouldExit = 1;
-            break;
-        }
-    }
-    // exit with proper status
+    
+	// exit with proper status
     if (shouldExit == 1) /* should exit with status (1) */
         exit(1);
 
