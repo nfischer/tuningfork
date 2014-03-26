@@ -50,7 +50,7 @@ int main()
     scanf("%s", fname);
 
     /* Check for valid input values
-    
+
         MIN_FREQ = 0
         MAX_FREQ = 22050 Hz
         MIN_DURATION = 0 
@@ -89,13 +89,13 @@ void genWave(char* fname, unsigned long numSamples, short int* data,int sampleSi
 void checkInputFormat(double freq, double duration, char* fname)
 {
     /* Check for valid input values
-    
+
         MIN_FREQ = 0
         MAX_FREQ = 22050 Hz
         MIN_DURATION = 0 
         MAX_DURATION = 60 * 100 s = 100 minutes
     */
-    
+
     int shouldExit = 0;
     if (freq <= MIN_FREQ || freq > MAX_FREQ)
     {
@@ -112,11 +112,11 @@ void checkInputFormat(double freq, double duration, char* fname)
         fprintf(stderr,"ERROR: You must input a nonempty file name. Exiting with status (1)\n");
         shouldExit = 1;
     }
-    
+
     int nameLen = strlen(fname);
     /* Catches the zero byte in the file name */
-    
-    
+
+
     int i; // iterator
     for(i=0; i < nameLen; i++)
     {
@@ -130,9 +130,9 @@ void checkInputFormat(double freq, double duration, char* fname)
     // exit with proper status
     if (shouldExit == 1) /* should exit with status (1) */
         exit(1);
-    
+
     /* Check for proper file name extension */
-    
+
     char nameV = fname[nameLen-1];
     char nameA = fname[nameLen-2];
     char nameW = fname[nameLen-3];
@@ -147,7 +147,7 @@ void checkInputFormat(double freq, double duration, char* fname)
     }
     else
         shouldExtend = 1;
-    
+
     // Append the .wav extension
     if (shouldExtend == 1)
         strcat(fname, ".wav");
