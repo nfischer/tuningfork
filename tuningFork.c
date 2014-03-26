@@ -29,21 +29,6 @@ int16_t HEADER[46] = {0x52, 0x49, 0x46, 0x46, 0xF6, 0xCC, 0x02, 0x00,
                       0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
                       0x74, 0x61, 0x10, 0xB1, 0x02, 0x00};
 
-/*const char* HEADER_ChunkID = "\x52\x49\x46\x46";
-const char* HEADER_Chunksize = "\xF6\xCC\x02\x00";
-const char* HEADER_Format = "\x57\x41\x56\x45";
-const char* HEADER_Subchunk1ID = "\x66\x6D\x74\x20";
-const char* HEADER_SubchunkSize = "\x12\x00\x00\x00";
-const char* HEADER_AudioFormat = "\x01\x00";
-const char* HEADER_Channels = "\x02\x00";
-const char* HEADER_SampleRate = "\x44\xAC\x00\x00";
-const char* HEADER_ByteRate = "\x10\xB1\x02\x00";
-const char* HEADER_BlockAlign = "\x04\x00";
-const char* HEADER_BitsPerSample = "\x10\x00";
-const char* HEADER_Subchunk2ID = "\x64\x61\x74\x61";
-const char* HEADER_Subchunk2Size = "\x10\xB1\x02\x00";*/
-
-
 const double PI = 3.141592653589793;
 
 
@@ -170,30 +155,15 @@ void genFile(double freq, double duration, char* fname)
         {
             fputc(HEADER[i], OutFile);
         }
-        /*fputs(HEADER_ChunkID, OutFile);
-        fputs(HEADER_Chunksize, OutFile);
-        fputs(HEADER_Format, OutFile);
-        fputs(HEADER_Subchunk1ID, OutFile);
-        fputs(HEADER_SubchunkSize, OutFile);
-        fputs(HEADER_AudioFormat, OutFile);
-        fputs(HEADER_Channels, OutFile);
-        fputs(HEADER_SampleRate, OutFile);
-        fputs(HEADER_ByteRate, OutFile);
-        fputs(HEADER_BlockAlign, OutFile);
-        fputs(HEADER_BitsPerSample, OutFile);
-        fputs(HEADER_Subchunk2ID, OutFile);
-        fputs(HEADER_Subchunk2Size, OutFile);*/
 
         /* 16-bit integer to designate amplitude of wave form */
-        int16_t sample; 
+        int16_t sample[1]; 
         int max_volume = 0x7FFF;
         for (i = 0; i < (44100 * duration); i++)
         {
-            sample = max_volume * sin(2 * PI * (double) i / freq);
-            //printf("%d\n", sample);
-            fputc(sample, OutFile); /* Left channel */
-            fputc(sample, OutFile); /* Right channel */
-
+            sample[0] = max_volume * sin(2 * PI * ((double) i/44100) * freq);
+            fwrite(sample, 2, 1, OutFile); /* Left channel */
+            fwrite(sample, 2, 1, OutFile); /* Right channel */
         }
     }
     
