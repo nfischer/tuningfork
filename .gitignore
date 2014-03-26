@@ -1,5 +1,13 @@
-tf
+## for vim ##
+*.swp
+*~
+
+## for OS X ##
 .*DS_Store
+
+## for tuningFork ##
 *.wav
+tf
+
 *.diff
 test*
