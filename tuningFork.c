@@ -97,16 +97,21 @@ void checkInputFormat(double freq, double duration, char* fname)
     */
 
     int shouldExit = 0;
+    // frequency
     if (freq <= MIN_FREQ || freq > MAX_FREQ)
     {
         fprintf(stderr,"ERROR: You must input a frequency value in the range %d < frequency <= %d. Exiting with status (1)\n", (int)MIN_FREQ, (int)MAX_FREQ);
         shouldExit = 1;
     }
+
+    // duration / length
     if (duration <= MIN_DURATION || duration > MAX_DURATION)
     {
         fprintf(stderr,"ERROR: You must input a duration value in the range %d < duration <= %d. Exiting with status (1)\n", (int)MIN_DURATION, (int)MAX_DURATION);
         shouldExit = 1;
     }
+
+    // empty string name
     if (strcmp(fname, "") == 0) /* empty string is invalid */
     {
         fprintf(stderr,"ERROR: You must input a nonempty file name. Exiting with status (1)\n");
@@ -115,7 +120,6 @@ void checkInputFormat(double freq, double duration, char* fname)
 
     int nameLen = strlen(fname);
     /* Catches the zero byte in the file name */
-
 
     int i; // iterator
     for(i=0; i < nameLen; i++)
@@ -145,7 +149,7 @@ void checkInputFormat(double freq, double duration, char* fname)
         else
             shouldExtend = 1;
     }
-    else
+    else // short enough that it must need an extension
         shouldExtend = 1;
 
     // Append the .wav extension
