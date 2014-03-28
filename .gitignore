@@ -8,6 +8,7 @@
 ## for tuningFork ##
 *.wav
 tf
+tf.exe
 
 *.diff
 test*

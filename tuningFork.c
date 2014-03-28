@@ -136,54 +136,58 @@ void checkInputFormat(double freq, double duration, char* fname)
 
 void genFile(double freq, double duration, char* fname)
 {
+    /*
+        Writing to the file is bit-count specific, so size-specific types
+        must be used for every value written to the file.
+    */
+
     const int SAMPLE_RATE = 44100;
     //duration = 1; /* Hard-coded to 1 second */
 
-    /**************************
-    * Calculate subchunk2Size *
-    **************************/
+    ///////////////////////////
+    // Calculate subchunk2Size
+    ///////////////////////////
 
     // int should be 32 bits on most systems
     //                = NumSamples * NumChannels * BitsPerSample/8
     int subchunk2Size = (duration * SAMPLE_RATE) * 2 * 16 / 8;
 
-    int scx = subchunk2Size; // scx will be modified
+    uint32_t scx = subchunk2Size; // scx will be modified
 
-    // char is 8 bits (one byte)
     // 256 is 2 ^ 8
-    char B4 = scx % 256;
+    uint8_t B4 = scx % 256;
     scx = scx / 256;
-    char B3 = scx % 256;
+    uint8_t B3 = scx % 256;
     scx = scx / 256;
-    char B2 = scx % 256;
+    uint8_t B2 = scx % 256;
     scx = scx / 256;
-    char B1 = scx % 256;
+    uint8_t B1 = scx % 256;
 
-    /**************************
-    * Calculate ChunkSize     *
-    **************************/
+    ///////////////////////////
+    // Calculate ChunkSize
+    ///////////////////////////
 
     int chunkSize = 36 + subchunk2Size;
 
-    int cx = chunkSize; // cx will be modified
+    uint32_t cx = chunkSize; // cx will be modified
 
-    // char is 8 bits (one byte)
+    // int8_t is 8 bits (one byte)
     // 256 is 2 ^ 8
-    char C4 = cx % 256;
+    uint8_t C4 = cx % 256;
     cx = cx / 256;
-    char C3 = cx % 256;
+    uint8_t C3 = cx % 256;
     cx = cx / 256;
-    char C2 = cx % 256;
+    uint8_t C2 = cx % 256;
     cx = cx / 256;
-    char C1 = cx % 256;
+    uint8_t C1 = cx % 256;
 
-    // char is 8 bits, and all these are 8 bits
-    char HEADER[46] = {0x52, 0x49, 0x46, 0x46,   C4,   C3,   C2,   C1,
-      /* offset:  8 */ 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
-              /* 16 */ 0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
-              /* 24 */ 0x44, 0xAC, 0x00, 0x00, 0x10, 0xB1, 0x02, 0x00,
-              /* 32 */ 0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
-              /* 40 */ 0x74, 0x61,   B4,   B3,   B2,   B1};
+    // int8_t is 8 bits, and all these are 8 bits
+    uint8_t HEADER[46] = {0x52, 0x49, 0x46, 0x46,   C4,   C3,   C2,   C1,
+        /* offset:  8 */ 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
+                /* 16 */ 0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
+                /* 24 */ 0x44, 0xAC, 0x00, 0x00, 0x10, 0xB1, 0x02, 0x00,
+                /* 32 */ 0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
+                /* 40 */ 0x74, 0x61,   B4,   B3,   B2,   B1};
 
 
     FILE *OutFile;
@@ -193,10 +197,19 @@ void genFile(double freq, double duration, char* fname)
     {
         int i; // iterator
 
-        for (i = 0; i < 46; i++)
-        {
-            fputc(HEADER[i], OutFile);
-        }
+        /////////////////////////
+        // Write header to file
+        /////////////////////////
+
+        //for (i = 0; i < 46; i++)
+        //{
+        //    fputc(HEADER[i], OutFile);
+        //}
+        fwrite(HEADER, 1, 46, OutFile); // guaranteed to be 1 byte
+
+        /////////////////////////
+        // Write data to file
+        /////////////////////////
 
         int16_t sample; // designates value of wave func at that point
         int max_volume = 0x7FFF;
