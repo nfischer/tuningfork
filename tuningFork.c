@@ -22,13 +22,6 @@ const double MAX_FREQ = 22050; /* 22050 Hz */
 const double MIN_DURATION = 0;
 const double MAX_DURATION = 60 * 100; /* 100 minutes */
 
-int16_t HEADER[46] = {0x52, 0x49, 0x46, 0x46, 0xF6, 0xCC, 0x02, 0x00,
-                      0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
-                      0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
-                      0x44, 0xAC, 0x00, 0x00, 0x10, 0xB1, 0x02, 0x00,
-                      0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
-                      0x74, 0x61, 0x10, 0xB1, 0x02, 0x00};
-
 const double PI = 3.141592653589793;
 
 
@@ -142,9 +135,57 @@ void checkInputFormat(double freq, double duration, char* fname)
 
 void genFile(double freq, double duration, char* fname)
 {
+    const int SAMPLE_RATE = 44100;
+    //duration = 1; /* Hard-coded to 1 second */
+
+    /**************************
+    * Calculate subchunk2Size *
+    **************************/
+
+    // int should be 32 bits on most systems
+    //                = NumSamples * NumChannels * BitsPerSample/8
+    int subchunk2Size = (duration * SAMPLE_RATE) * 2 * 16 / 8;
+
+    int scx = subchunk2Size; // scx will be modified
+
+    // char is 8 bits (one byte)
+    // 256 is 2 ^ 8
+    char B4 = scx % 256;
+    scx = scx / 256;
+    char B3 = scx % 256;
+    scx = scx / 256;
+    char B2 = scx % 256;
+    scx = scx / 256;
+    char B1 = scx % 256;
+
+    /**************************
+    * Calculate ChunkSize     *
+    **************************/
+
+    int chunkSize = 36 + subchunk2Size;
+
+    int cx = chunkSize; // cx will be modified
+
+    // char is 8 bits (one byte)
+    // 256 is 2 ^ 8
+    char C4 = cx % 256;
+    cx = cx / 256;
+    char C3 = cx % 256;
+    cx = cx / 256;
+    char C2 = cx % 256;
+    cx = cx / 256;
+    char C1 = cx % 256;
+
+    // char is 8 bits, and all these are 8 bits
+    char HEADER[46] = {0x52, 0x49, 0x46, 0x46,   C4,   C3,   C2,   C1,
+                       0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
+                       0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
+                       0x44, 0xAC, 0x00, 0x00, 0x10, 0xB1, 0x02, 0x00,
+                       0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
+                       0x74, 0x61,   B4,   B3,   B2,   B1};
+
     FILE *OutFile;
 
-    duration = 1; /* Hard-coded to 1 second */
 
     OutFile = fopen(fname, "w");
     if (OutFile != NULL)
@@ -159,9 +200,9 @@ void genFile(double freq, double duration, char* fname)
         /* 16-bit integer to designate amplitude of wave form */
         int16_t sample[1]; 
         int max_volume = 0x7FFF;
-        for (i = 0; i < (44100 * duration); i++)
+        for (i = 0; i < (SAMPLE_RATE * duration); i++)
         {
-            sample[0] = max_volume * sin(2 * PI * ((double) i/44100) * freq);
+            sample[0] = max_volume * sin(2 * PI * ((double) i/SAMPLE_RATE) * freq);
             fwrite(sample, 2, 1, OutFile); /* Left channel */
             fwrite(sample, 2, 1, OutFile); /* Right channel */
         }
