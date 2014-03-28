@@ -3,6 +3,15 @@ tuningfork
 
 Generates a .wav file of specified duration, frequency, and file name.
 
+Build
+-----
+
+You can build our project using the compile script. Use it as such:
+```
+$ ./compileTuningFork
+$
+```
+
 Files
 -----
 

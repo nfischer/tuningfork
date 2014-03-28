@@ -1,9 +1,12 @@
 /***********************************************************
 *                                                          *
-* Generates a .wav file with specified                     *
-* duration, frequency, and other parameters                *
+* Generates a .wav file with specified duration,           *
+* frequency, and other parameters.                         *
 *                                                          *
-* --- further description ---                              *
+* This produces a 2 channel .wav file.                     *
+*                                                          *
+* The .wav extension should be appended to any specified   *
+* file name that does not already have it.                 *
 *                                                          *
 * Authors: Brandon Freitag, Nate Fischer, and Ivan De Dios *
 * Started November 2013                                    *
