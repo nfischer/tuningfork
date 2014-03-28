@@ -31,19 +31,20 @@ const double PI = 3.141592653589793;
 void genFile(double freq, double time, char* fname);
 void checkInputFormat(double freq, double duration, char* fname);
 
-void debugOutput(double freq, double duration, char* fname)
-{
-    fprintf(stderr, "You entered %lf Hz freq\n", freq);
-    fprintf(stderr, "You entered %lf s duration\n", duration);
-    fprintf(stderr, "You entered <%s> as your file name\n", fname);
-    return;
-}
-
 
 int main()
 {
     double freq, duration;
-    char fname[255]; // longest name supported on linux
+    char fname[255];
+    /*
+        255 characters is the longest file name supported on Linux
+        We _should_ however support longer names, since this also
+        permits paths to be written, and a valid path may exceed
+        255 characters.
+
+        Entering a name longer than 255 characters causes the
+        program to crash. This should clearly be fixed.
+    */
 
     // get user input
     printf("Input desired frequency (Hz): ");
@@ -62,9 +63,6 @@ int main()
     */
 
     checkInputFormat(freq, duration, fname);
-
-    // DEBUG (check user input)
-    debugOutput(freq, duration, fname);
 
     // Generate the file
     genFile(freq, duration, fname);
@@ -181,35 +179,38 @@ void genFile(double freq, double duration, char* fname)
 
     // char is 8 bits, and all these are 8 bits
     char HEADER[46] = {0x52, 0x49, 0x46, 0x46,   C4,   C3,   C2,   C1,
-                       0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
-                       0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
-                       0x44, 0xAC, 0x00, 0x00, 0x10, 0xB1, 0x02, 0x00,
-                       0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
-                       0x74, 0x61,   B4,   B3,   B2,   B1};
+      /* offset:  8 */ 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
+              /* 16 */ 0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
+              /* 24 */ 0x44, 0xAC, 0x00, 0x00, 0x10, 0xB1, 0x02, 0x00,
+              /* 32 */ 0x04, 0x00, 0x10, 0x00, 0x00, 0x00, 0x64, 0x61,
+              /* 40 */ 0x74, 0x61,   B4,   B3,   B2,   B1};
+
 
     FILE *OutFile;
-
 
     OutFile = fopen(fname, "w");
     if (OutFile != NULL)
     {
         int i; // iterator
 
-        for(i = 0; i < 46; i++)
+        for (i = 0; i < 46; i++)
         {
             fputc(HEADER[i], OutFile);
         }
 
-        /* 16-bit integer to designate amplitude of wave form */
-        int16_t sample[1]; 
+        int16_t sample; // designates value of wave func at that point
         int max_volume = 0x7FFF;
-        for (i = 0; i < (SAMPLE_RATE * duration); i++)
+        double omega = 2*PI*freq; // cuts down on calculation time
+        int dataLoopLimit = SAMPLE_RATE * duration;
+        for (i = 0; i < dataLoopLimit; i++)
         {
-            sample[0] = max_volume * sin(2 * PI * ((double) i/SAMPLE_RATE) * freq);
-            fwrite(sample, 2, 1, OutFile); /* Left channel */
-            fwrite(sample, 2, 1, OutFile); /* Right channel */
+            sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
+
+            /* write 2 bytes (16 bits), 1 element */
+            fwrite(&sample, 2, 1, OutFile); /* Left channel */
+            fwrite(&sample, 2, 1, OutFile); /* Right channel */
         }
     }
-    
+
     fclose(OutFile);
 }
