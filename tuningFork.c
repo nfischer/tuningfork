@@ -154,14 +154,14 @@ void genFile(double freq, double duration, char* fname)
 
     uint32_t scx = subchunk2Size; // scx will be modified
 
-    // 256 is 2 ^ 8
-    uint8_t B4 = scx % 256;
-    scx = scx / 256;
-    uint8_t B3 = scx % 256;
-    scx = scx / 256;
-    uint8_t B2 = scx % 256;
-    scx = scx / 256;
-    uint8_t B1 = scx % 256;
+    // shift by 8 bits
+    uint8_t B4 = scx;
+    scx = scx >> 8;
+    uint8_t B3 = scx;
+    scx = scx >> 8;
+    uint8_t B2 = scx;
+    scx = scx >> 8;
+    uint8_t B1 = scx;
 
     ///////////////////////////
     // Calculate ChunkSize
@@ -172,14 +172,14 @@ void genFile(double freq, double duration, char* fname)
     uint32_t cx = chunkSize; // cx will be modified
 
     // int8_t is 8 bits (one byte)
-    // 256 is 2 ^ 8
-    uint8_t C4 = cx % 256;
-    cx = cx / 256;
-    uint8_t C3 = cx % 256;
-    cx = cx / 256;
-    uint8_t C2 = cx % 256;
-    cx = cx / 256;
-    uint8_t C1 = cx % 256;
+    // shift by 8 bits
+    uint8_t C4 = cx;
+    cx = cx >> 8;
+    uint8_t C3 = cx;
+    cx = cx >> 8;
+    uint8_t C2 = cx;
+    cx = cx >> 8;
+    uint8_t C1 = cx;
 
     // int8_t is 8 bits, and all these are 8 bits
     uint8_t HEADER[46] = {0x52, 0x49, 0x46, 0x46,   C4,   C3,   C2,   C1,
