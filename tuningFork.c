@@ -25,7 +25,8 @@ const double MAX_FREQ = 22050; /* 22050 Hz */
 const double MIN_DURATION = 0;
 const double MAX_DURATION = 60 * 100; /* 100 minutes */
 
-const double PI = 3.141592653589793;
+//const double PI = 3.141592653589793;
+const double PI = acos(-1);
 
 
 void genFile(double freq, double time, char* fname);
