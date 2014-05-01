@@ -53,7 +53,7 @@ int main()
     printf("Input desired duration (sec): ");
     scanf("%lf", &duration);
     printf("Enter desired file name: ");
-    scanf("%s", fname);
+    scanf("\n%[^\n]s", fname);
 
     /* Check for valid input values
 
