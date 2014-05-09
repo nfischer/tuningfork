@@ -24,6 +24,7 @@ const double MIN_FREQ = 0;
 const double MAX_FREQ = 22050; /* 22050 Hz */
 const double MIN_DURATION = 0;
 const double MAX_DURATION = 60 * 100; /* 100 minutes */
+const int MAX_NAME_LEN = 255;
 
 //const double PI = 3.141592653589793;
 const double PI = acos(-1);
@@ -36,7 +37,7 @@ void checkInputFormat(double freq, double duration, char* fname);
 int main()
 {
     double freq, duration;
-    char fname[255];
+    char fname[MAX_NAME_LEN];
     /*
         255 characters is the longest file name supported on Linux
         We _should_ however support longer names, since this also
@@ -53,7 +54,14 @@ int main()
     printf("Input desired duration (sec): ");
     scanf("%lf", &duration);
     printf("Enter desired file name: ");
-    scanf("\n%[^\n]s", fname);
+    //scanf("\n%[^\n]s", fname);
+
+    // throw out everything up until newline
+    char garbageChar;
+    for (garbageChar = getchar(); garbageChar != '\n'; garbageChar = getchar() );
+
+    // read in name (with buffer protection)
+    fgets(fname, MAX_NAME_LEN, stdin);
 
     /* Check for valid input values
 
@@ -97,6 +105,12 @@ void checkInputFormat(double freq, double duration, char* fname)
         shouldExit = 1;
     }
 
+    int nameLen = strlen(fname);
+
+    // strip trailing newline
+    fname[nameLen-1] = '\0'; // was previously newline
+    nameLen--;
+
     // empty string name
     if (strcmp(fname, "") == 0) /* empty string is invalid */
     {
@@ -104,7 +118,6 @@ void checkInputFormat(double freq, double duration, char* fname)
         shouldExit = 1;
     }
 
-    int nameLen = strlen(fname);
     /* Catches the zero byte in the file name */
 
     // exit with proper status
