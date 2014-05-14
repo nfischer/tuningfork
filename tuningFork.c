@@ -156,7 +156,6 @@ void genFile(double freq, double duration, char* fname)
     */
 
     const int SAMPLE_RATE = 44100;
-    //duration = 1; /* Hard-coded to 1 second */
 
     ///////////////////////////
     // Calculate subchunk2Size
@@ -204,40 +203,43 @@ void genFile(double freq, double duration, char* fname)
                 /* 40 */ 0x74, 0x61,   B4,   B3,   B2,   B1};
 
 
+    //////////////////////
+    // Calculate samples
+    //////////////////////
+
+    int dataLoopLimit = SAMPLE_RATE * duration;
+    uint16_t* dataArr = malloc(sizeof(uint16_t) * 2 * dataLoopLimit);
+
+    int16_t sample; // designates value of wave func at that point
+    int max_volume = 0x7FFF;
+    double omega = 2*PI*freq; // cuts down on calculation time
+
+    int i;
+    for (i = 0; i < dataLoopLimit; i++)
+    {
+        sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
+
+        /* write two samples to array */
+        int j = i << 1; // j = i * 2
+        dataArr[j] = sample;
+        dataArr[j+1] = sample;
+    }
+
+
     FILE *OutFile;
 
     OutFile = fopen(fname, "w");
     if (OutFile != NULL)
     {
-        int i; // iterator
-
-        /////////////////////////
-        // Write header to file
-        /////////////////////////
-
-        //for (i = 0; i < 46; i++)
-        //{
-        //    fputc(HEADER[i], OutFile);
-        //}
+        /* Write header to file */
         fwrite(HEADER, 1, 46, OutFile); // guaranteed to be 1 byte
 
-        /////////////////////////
-        // Write data to file
-        /////////////////////////
-
-        int16_t sample; // designates value of wave func at that point
-        int max_volume = 0x7FFF;
-        double omega = 2*PI*freq; // cuts down on calculation time
-        int dataLoopLimit = SAMPLE_RATE * duration;
-        for (i = 0; i < dataLoopLimit; i++)
-        {
-            sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
-
-            /* write 2 bytes (16 bits), 1 element */
-            fwrite(&sample, 2, 1, OutFile); /* Left channel */
-            fwrite(&sample, 2, 1, OutFile); /* Right channel */
-        }
+        /* Write audio data to file */
+        fwrite(dataArr, 2, 2*dataLoopLimit, OutFile);
     }
 
     fclose(OutFile);
+
+    // free dynamically allocated memory
+    free(dataArr);
 }
