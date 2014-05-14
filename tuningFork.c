@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <omp.h>
 
 /* Global constants */
 const double MIN_FREQ = 0;
@@ -215,6 +216,9 @@ void genFile(double freq, double duration, char* fname)
     double omega = 2*PI*freq; // cuts down on calculation time
 
     int i;
+    // parallelize this loop to cut down on run time
+
+    #pragma omp parallel for private (sample)
     for (i = 0; i < dataLoopLimit; i++)
     {
         sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);

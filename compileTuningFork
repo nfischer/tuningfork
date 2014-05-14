@@ -4,6 +4,6 @@
 # Warning: do not change the name of tuningFork.c
 # Should compile under both Mac and Linux
 
-gcc -o tf -Wall tuningFork.c -lm # echo to stdout or stderr
+gcc -fopenmp -o tf -Wall tuningFork.c -lm # echo to stdout or stderr
 # includes -lm to link to math library
 exit $? # status of gcc
