@@ -1,19 +1,21 @@
 tuningfork
 ==========
 
-Generates a .wav file of specified duration, frequency, and file name.
+Generates a single-tone .wav file of specified duration, frequency, and
+file name.
 
 Build
 -----
 
-You can build our project using the compile script. Use it as such:
+We recommend that you build our project using the compile script. Use it as
+such:
 ```
 $ ./compileTuningFork
 $
 ```
 
-Files
------
+Details
+-------
 
 ### tuningFork.c
 
@@ -22,21 +24,10 @@ of specified duration, frequency, and filename. This takes user input
 for these parameters from a prompt, checks for valid input, and then
 creates the file if all parameters are valid.
 
-### tune
-
-This is a bash script that interfaces with an executable named tf
-produced from the compilation of tuningFork.c. This will echo default
-inputs into the executable's prompts, allowing users to bypass the slow
-input prompts. Users can specify nondefault values for parameters with
-options.
-
-### compileTuningFork
-
-This is our easier solution to makefiles. A simple bash script does the
-job just as well (there's only one .c file), and it nicely synchronizes
-our executable name across our different machines. This is intended
-for use during development of the project, not the normal usage of the
-finished project.
+This is parallelized with OpenMP to maximize speed efficiency. The .wav
+file is stored in memory until the file is written, so don't generate large
+files on systems where RAM is a limitation. On some systems, it can
+generate a 6000 second (100 minute) wav file in under 30 seconds.
 
 Usage
 -----
@@ -50,10 +41,7 @@ Input desired duration (sec): 10
 Enter desired file name: a.wav
 $
 ```
-This executable prompts for user input on frequency, duration, and file
-name. Simply enter these values when prompted. Frequency and duration can
-take decimal values with the precision of a double. Filename is currently
-limited to 50 characters maximum.
+All the above is fairly self explanatory
 
 ### Using the *tune* bash script
 Example:
@@ -61,9 +49,9 @@ Example:
 $ ./tune -n "other.wav" # no output to terminal
 $
 ```
-This script interfaces with the tf executable file. It will compile it if
-it doesn't already exist. This script, without options, will create a file
-named "a.wav" that has duration 10 seconds and frequency A=440Hz.
+This script interfaces with the tf executable file. This script, without
+options, will create a file named "A440.wav" that has duration 10 seconds
+and frequency A=440Hz.
 
 You can change the default name, frequency, and/or duration with the
 following options:
