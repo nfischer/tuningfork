@@ -19,15 +19,18 @@ Details
 
 ### tuningFork.c
 
-The main file is tuningFork.c, a C file designed to create a .wav file
-of specified duration, frequency, and filename. This takes user input
-for these parameters from a prompt, checks for valid input, and then
-creates the file if all parameters are valid.
+The main file is tuningFork.c, a C file designed to create a .wav file of
+specified duration, frequency, and filename. This takes user input for
+these parameters from a prompt, checks for valid input, and then creates
+the file if all parameters are valid.
 
-This is parallelized with OpenMP to maximize speed efficiency. The .wav
-file is stored in memory until the file is written, so don't generate large
-files on systems where RAM is a limitation. On some systems, it can
-generate a 6000 second (100 minute) wav file in under 30 seconds.
+This is parallelized with OpenMP to maximize speed. The .wav file is stored
+in memory until the file is written, so don't generate large files on
+systems where RAM is a limitation.
+
+Recently, a lookup table was added to minimize sin computations. This
+bumped up performance a great deal. Now, on some systems, it can generate a
+6000 second (100 minute) .wav file in under 15 seconds.
 
 Usage
 -----
