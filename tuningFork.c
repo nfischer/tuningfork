@@ -208,30 +208,70 @@ void genFile(double freq, double duration, char* fname)
     // Calculate samples
     //////////////////////
 
-    int dataLoopLimit = SAMPLE_RATE * duration;
-    uint16_t* dataArr = malloc(sizeof(uint16_t) * 2 * dataLoopLimit);
 
     int16_t sample; // designates value of wave func at that point
     int max_volume = 0x7FFF;
     double omega = 2*PI*freq; // cuts down on calculation time
 
     int i;
-    // parallelize this loop to cut down on run time
 
-    #pragma omp parallel for private (sample)
-    for (i = 0; i < dataLoopLimit; i++)
+    double period = 1/freq; // in seconds
+    int tableSize = SAMPLE_RATE * period; // in samples
+    uint16_t* sampleTable = malloc(sizeof(uint16_t) * tableSize);
+
+    int dataLoopLimit = SAMPLE_RATE * duration;
+    uint16_t* dataArr = malloc(sizeof(uint16_t) * 2 * dataLoopLimit);
+
+    // Generate a lookup table for samples
+    int nThreads = omp_get_num_procs();
+    printf("Using %d threads\n", nThreads);
+    omp_set_num_threads(nThreads);
+
+    #pragma omp parallel
     {
-        sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
+        double omegaT = omega; // omega * time
+        double deltaOmegaT = (double)1/SAMPLE_RATE;
 
-        /* write two samples to array */
-        int j = i << 1; // j = i * 2
-        dataArr[j] = sample;
-        dataArr[j+1] = sample;
+        // do sin(omegaT), then increment omegaT to the next omegaT value
+        #pragma omp for private (sample)
+        for (i = 0; i < tableSize; i++)
+        {
+            sample = max_volume * sin(omegaT);
+
+            sampleTable[i] = sample;
+
+            omegaT += deltaOmegaT; // gives next value to evaluate sin at
+        }
+
+
+        int periodIndex = 0; // the index within the current period relative to
+                             // the start of the period
+
+        // Populate sample array from lookup table
+        #pragma omp for private (sample)
+        for (i = 0; i < dataLoopLimit; i++)
+        {
+            //sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
+            sample = sampleTable[periodIndex];
+
+            /* write two samples to array */
+            int j = i*2; // this is fast multiplication
+            dataArr[j] = sample;
+            dataArr[j+1] = sample;
+
+            periodIndex++;
+            if ( periodIndex >= tableSize)
+            {
+                // reset the index
+                periodIndex = 0;
+            }
+        }
     }
 
 
     FILE *OutFile;
 
+    int shouldExit = 0;
     OutFile = fopen(fname, "w");
     if (OutFile != NULL)
     {
@@ -241,9 +281,18 @@ void genFile(double freq, double duration, char* fname)
         /* Write audio data to file */
         fwrite(dataArr, 2, 2*dataLoopLimit, OutFile);
     }
+    else
+    {
+        fprintf(stderr, "Error opening your file. Terminating program.\n");
+        shouldExit = 1;
+    }
 
     fclose(OutFile);
 
     // free dynamically allocated memory
     free(dataArr);
+    free(sampleTable);
+
+    if (shouldExit != 0)
+        exit(shouldExit);
 }
