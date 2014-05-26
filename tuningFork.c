@@ -224,7 +224,6 @@ void genFile(double freq, double duration, char* fname)
 
     // Generate a lookup table for samples
     int nThreads = omp_get_num_procs();
-    printf("Using %d threads\n", nThreads);
     omp_set_num_threads(nThreads);
 
     #pragma omp parallel
