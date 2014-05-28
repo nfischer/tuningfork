@@ -7,11 +7,10 @@ file name.
 Build
 -----
 
-We recommend that you build our project using the compile script. Use it as
-such:
+To build our project, please use a make command. The compile script is
+deprecated.
 ```
-$ ./compileTuningFork
-$
+$ make
 ```
 
 Details
