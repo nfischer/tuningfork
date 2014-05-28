@@ -10,5 +10,7 @@
 tf
 tf.exe
 
+*.o
+
 *.diff
 test*

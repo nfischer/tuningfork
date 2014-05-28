@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <omp.h>
+//#include <omp.h> // multithreading was removed
 
 /* Global constants */
 const double MIN_FREQ = 0;
@@ -27,8 +27,8 @@ const double MIN_DURATION = 0;
 const double MAX_DURATION = 60 * 100; /* 100 minutes */
 const int MAX_NAME_LEN = 255;
 
-//const double PI = 3.141592653589793;
-const double PI = acos(-1);
+const double PI = 3.141592653589793; // full precision supported
+//const double PI = acos(-1);
 
 
 void genFile(double freq, double time, char* fname);
@@ -223,8 +223,8 @@ void genFile(double freq, double duration, char* fname)
     uint16_t* dataArr = malloc(sizeof(uint16_t) * 2 * dataLoopLimit);
 
     // Generate a lookup table for samples
-    int nThreads = omp_get_num_procs();
-    omp_set_num_threads(nThreads);
+    //int nThreads = omp_get_num_procs();
+    //omp_set_num_threads(nThreads);
 
     double omegaT = 0; // omega * time
     double deltaOmegaT = (double)omega/SAMPLE_RATE;
