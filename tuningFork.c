@@ -226,44 +226,42 @@ void genFile(double freq, double duration, char* fname)
     int nThreads = omp_get_num_procs();
     omp_set_num_threads(nThreads);
 
-    #pragma omp parallel
+    double omegaT = 0; // omega * time
+    double deltaOmegaT = (double)omega/SAMPLE_RATE;
+
+
+    for (i = 0; i < tableSize; i++)
     {
-        double omegaT = omega; // omega * time
-        double deltaOmegaT = (double)1/SAMPLE_RATE;
+        //fprintf(stderr, "omegaT is %lf\n", omegaT);
+        sample = max_volume * sin(omegaT);
+        //sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
 
-        // do sin(omegaT), then increment omegaT to the next omegaT value
-        #pragma omp for private (sample)
-        for (i = 0; i < tableSize; i++)
+        sampleTable[i] = sample;
+
+        omegaT += deltaOmegaT; // gives next value to evaluate sin at
+    }
+
+
+    int periodIndex = 0; // the index within the current period relative to
+                         // the start of the period
+
+    // Populate sample array from lookup table
+    for (i = 0; i < dataLoopLimit; i++)
+    {
+        //periodIndex = i % tableSize;
+
+        sample = sampleTable[periodIndex];
+
+        /* write two samples to array */
+        int j = i*2;
+        dataArr[j] = sample;
+        dataArr[j+1] = sample;
+
+        periodIndex++;
+        if ( periodIndex >= tableSize)
         {
-            sample = max_volume * sin(omegaT);
-
-            sampleTable[i] = sample;
-
-            omegaT += deltaOmegaT; // gives next value to evaluate sin at
-        }
-
-
-        int periodIndex = 0; // the index within the current period relative to
-                             // the start of the period
-
-        // Populate sample array from lookup table
-        #pragma omp for private (sample)
-        for (i = 0; i < dataLoopLimit; i++)
-        {
-            //sample = max_volume * sin(omega * (double)i/SAMPLE_RATE);
-            sample = sampleTable[periodIndex];
-
-            /* write two samples to array */
-            int j = i*2; // this is fast multiplication
-            dataArr[j] = sample;
-            dataArr[j+1] = sample;
-
-            periodIndex++;
-            if ( periodIndex >= tableSize)
-            {
-                // reset the index
-                periodIndex = 0;
-            }
+            // reset the index
+            periodIndex = 0;
         }
     }
 
