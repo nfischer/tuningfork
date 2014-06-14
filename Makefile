@@ -1,16 +1,13 @@
 # makefile for tuningFork
 
 CC=gcc
-CFLAGS=-Wall -O3
+CFLAGS=-Wall -O2
 LDFLAGS=-lm
 
 all: tf
 
 tf: tuningFork.o
 	$(CC) $(CFLAGS) tuningFork.o -o tf $(LDFLAGS)
-
-#fast:
-#	$(CC) $(CFLAGS) -O3 tuningFork.c -o tf $(LDFLAGS)
 
 tuningFork.o:
 	$(CC) $(CFLAGS) -c tuningFork.c $(LDFLAGS)
