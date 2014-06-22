@@ -209,6 +209,7 @@ void genFile(double freq, double duration, char* fname)
     //////////////////////
 
 
+    const int NUM_PERIODS = 400;
     int16_t sample; // designates value of wave func at that point
     int max_volume = 0x7FFF;
     double omega = 2*PI*freq; // cuts down on calculation time
@@ -216,7 +217,7 @@ void genFile(double freq, double duration, char* fname)
     int i;
 
     double period = 1/freq; // in seconds
-    int tableSize = SAMPLE_RATE * period; // in samples
+    int tableSize = NUM_PERIODS * SAMPLE_RATE * period; // in samples
     uint16_t* sampleTable = malloc(sizeof(uint16_t) * tableSize);
 
     int dataLoopLimit = SAMPLE_RATE * duration;
