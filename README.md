@@ -23,13 +23,14 @@ specified duration, frequency, and filename. This takes user input for
 these parameters from a prompt, checks for valid input, and then creates
 the file if all parameters are valid.
 
-This is parallelized with OpenMP to maximize speed. The .wav file is stored
-in memory until the file is written, so don't generate large files on
-systems where RAM is a limitation.
+The .wav file is stored in memory until the file is written in order to
+improve file I/O, so don't generate large files on systems where RAM is a
+limitation.
 
 Recently, a lookup table was added to minimize sin computations. This
 bumped up performance a great deal. Now, on some systems, it can generate a
-6000 second (100 minute) .wav file in under 15 seconds.
+6000 second (100 minute) .wav file in under 15 seconds (under 3 on some
+solid state drives). You can benchmark our program yourself!
 
 Usage
 -----
