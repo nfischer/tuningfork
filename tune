@@ -25,7 +25,7 @@ duration=10
 fname="A440.wav"
 
 if [[ ! -f tf ]]; then # create the executable file
-	gcc -o tf tuningFork.c
+    make
 	if [[ $? != 0 ]]; then # failed compilation
 		echo "Compilation of tuningFork.c failed"
 		echo "Exiting with status (1)"
