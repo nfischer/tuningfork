@@ -3,7 +3,7 @@
 CFLAGS  := 
 LDFLAGS := -lm
 SOURCES := tuningFork.c
-OBJECTS :=$(SOURCES:.cpp=.o)
+OBJECTS :=$(SOURCES:.c=.o)
 EXECUTABLE := tf
 
 all: $(SOURCES) $(EXECUTABLE)
