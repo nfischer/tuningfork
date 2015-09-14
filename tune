@@ -3,7 +3,7 @@
 # A shell script to interface with tuningFork.c
 
 
-helpMenu()
+function helpMenu
 {
 # prints helpMenu output
 cat >&2 << HELPMESSAGE
@@ -25,51 +25,51 @@ duration=10
 fname="A440.wav"
 
 if [[ ! -f tf ]]; then # create the executable file
-    make
-	if [[ $? != 0 ]]; then # failed compilation
-		echo "Compilation of tuningFork.c failed"
-		echo "Exiting with status (1)"
-		exit 1
-	fi
+  make
+  if [[ $? != 0 ]]; then # failed compilation
+    echo "Compilation of tuningFork.c failed"
+    echo "Exiting with status (1)"
+    exit 1
+  fi
 fi
 
 # ./tf executable should exist
 
 if [ "$1" == "--help" ]; then
-	helpMenu # function call
-	exit 0
+  helpMenu # function call
+  exit 0
 fi
 # possibly change variables
 
 while getopts "hf:d:n:" OPTION; do
-	case $OPTION in
-		h)
-			helpMenu
-			exit 0
-			;;
-		f) # change frequency
-			freq=$OPTARG
-			;;
-		d) # set to overwrite mode
-			duration=$OPTARG
-			;;
-		n)
-			fname=$OPTARG
-			;;
-		?)
-			helpMenu # call funciton
-			exit 1
-			;;
-	esac
+  case $OPTION in
+    h)
+      helpMenu
+      exit 0
+      ;;
+    f) # change frequency
+      freq=$OPTARG
+      ;;
+    d) # set to overwrite mode
+      duration=$OPTARG
+      ;;
+    n)
+      fname=$OPTARG
+      ;;
+    ?)
+      helpMenu # call funciton
+      exit 1
+      ;;
+  esac
 done
 
 
 
 # output variables to stdout piped to ./tf
-echoString="$freq\n$duration\n$fname\n"
+echoString="${freq}\n${duration}\n${fname}\n"
 
 # -en interprets escape sequences and ensures only 1 newline at end
 # redirect output to black hole
-echo -en "$echoString" | ./tf >/dev/null
+echo -en "${echoString}" | ./tf >/dev/null
 
 exit 0

@@ -1,6 +1,6 @@
 # makefile for tuningFork
 
-CFLAGS  := 
+CFLAGS  := -O2
 LDFLAGS := -lm
 SOURCES := tuningFork.c
 OBJECTS :=$(SOURCES:.c=.o)

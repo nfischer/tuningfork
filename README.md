@@ -9,6 +9,7 @@ Build
 
 To build our project, please use a make command. The compile script is
 deprecated.
+
 ```
 $ make
 ```
@@ -36,7 +37,9 @@ Usage
 -----
 
 ### Using the executable *tf*
+
 Example prompts and input:
+
 ```
 $ ./tf
 Input desired frequency (Hz): 440
@@ -44,20 +47,24 @@ Input desired duration (sec): 10
 Enter desired file name: a.wav
 $
 ```
+
 All the above is fairly self explanatory
 
 ### Using the *tune* bash script
+
 Example:
+
 ```
 $ ./tune -n "other.wav" # no output to terminal
-$
 ```
+
 This script interfaces with the tf executable file. This script, without
 options, will create a file named "A440.wav" that has duration 10 seconds
 and frequency A=440Hz.
 
 You can change the default name, frequency, and/or duration with the
 following options:
+
 ```
 -f                specify frequency (default = 440Hz)
 -d                specify time duration (default = 10s)
