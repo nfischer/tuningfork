@@ -25,6 +25,9 @@ const double MAX_FREQ = 22050;  // 22050 Hz
 const double MIN_DURATION = 0;
 const double MAX_DURATION = 60 * 100;  // 100 minutes
 const int MAX_NAME_LEN = 255;
+const int LOOKUP_TABLE_SIZE = 8192;
+const int QUARTER_TABLE_SIZE = 2048;
+const int MAX_VOLUME = 0x7FFF;
 const double PI = 3.141592653589793;  // full precision supported
 
 void genFile(double freq, double time, char* fname);
@@ -189,37 +192,31 @@ void genFile(double freq, double duration, char* fname) {
     /////////////////////////
     // Generate data subchunk
     /////////////////////////
-
-    int max_volume = 0x7FFF;
     int numSamples = SAMPLE_RATE * duration;
 
     // Generate a lookup table for samples
-    const int lookupTableSize = 8192;  // Size in samples
-    const int quarterTableSize = lookupTableSize >> 2;
-    int16_t* lookupTable = malloc(sizeof(int16_t) * lookupTableSize);
-
-    // Generate lookup table for 1/4 period of a sine wave
     // We can evaluate any value over an entire period using just the first quadrant
-    for (int i = 0; i < quarterTableSize; i++) {
-        lookupTable[i] = max_volume * sin((PI / 2) * ((double)i / quarterTableSize));
-        lookupTable[(quarterTableSize * 2) - i - 1] = lookupTable[i];
-        lookupTable[i + quarterTableSize * 2] = ~lookupTable[i];
-        lookupTable[(quarterTableSize * 4) - i - 1] = ~lookupTable[i];
+    int16_t* lookupTable = malloc(sizeof(int16_t) * LOOKUP_TABLE_SIZE);
+    int i;
+    for (i = 0; i < QUARTER_TABLE_SIZE; i++) {
+        lookupTable[i] = MAX_VOLUME * sin((PI / 2) * ((double)i / QUARTER_TABLE_SIZE));
+        lookupTable[(QUARTER_TABLE_SIZE * 2) - i - 1] = lookupTable[i];
+        lookupTable[i + QUARTER_TABLE_SIZE * 2] = ~lookupTable[i];
+        lookupTable[(QUARTER_TABLE_SIZE * 4) - i - 1] = ~lookupTable[i];
     }
 
-    const double phaseIncrement = (double)(freq / (2.0 * SAMPLE_RATE)) * lookupTableSize;
+    const double phaseIncrement = (double)(freq / SAMPLE_RATE) * LOOKUP_TABLE_SIZE;
     double phase = 0.0;
     int phase_i = 0;
     int16_t* dataSubChunk = malloc(sizeof(int16_t) * numSamples * 2);
 
-    for (int i = 0; i < numSamples; ++i) {
+    for (i = 0; i < numSamples; i += 2) {
         phase_i = (int)phase;
-        int j = i * 2;
-        dataSubChunk[j] = lookupTable[phase_i];
-        dataSubChunk[j + 1] = lookupTable[phase_i];
+        dataSubChunk[i] = lookupTable[phase_i];
+        dataSubChunk[i + 1] = lookupTable[phase_i];
         phase += phaseIncrement;
-        if (phase >= (double)lookupTableSize)
-            phase -= (double)lookupTableSize;
+        if (phase >= (double)LOOKUP_TABLE_SIZE)
+            phase -= (double)LOOKUP_TABLE_SIZE;
     }
 
     FILE *OutFile;
