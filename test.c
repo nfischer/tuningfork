@@ -28,13 +28,14 @@ int compareFileSizes(char* fname1, char* fname2, int* buf)
 }
 
 const int BUFSIZE_LIMIT = 2 << 28; // 256M items, so 512MB of RAM
-const double THRESHOLD = 15; // arbitrary threshold
+const double THRESHOLD = 1.0; // arbitrary threshold
+const int SAMPLE_RATE = 44100;
 
 int main(int argc, char *argv[])
 {
-  if (argc < 3)
+  if (argc < 4)
   {
-    if (argc < 2)
+    if (argc < 3)
       fprintf(stderr,"Must supply two filenames and the frequency\n");
     else
       fprintf(stderr,"Must supply the frequency as well\n");
@@ -94,11 +95,12 @@ int main(int argc, char *argv[])
   free(buf1);
   free(buf2);
 
-  if (average/freq < THRESHOLD)
+  double numPeriods = (fileSize/2) / SAMPLE_RATE * freq;
+  if (average/numPeriods < THRESHOLD)
     return 0;
   else
   {
-    printf("The difference is: %lf\n", average/freq);
+    printf("The difference is: %lf\n", average/numPeriods);
     return average;
   }
 }
