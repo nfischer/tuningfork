@@ -75,10 +75,15 @@ int main(int argc, char *argv[])
   int bufsize = (fileSize/2) < BUFSIZE_LIMIT ? (fileSize/2) : BUFSIZE_LIMIT;
   int16_t *buf1 = malloc(bufsize * sizeof(int16_t));
   int16_t *buf2 = malloc(bufsize * sizeof(int16_t));
-  fread(buf1, 2, bufsize, inFile1);
-  fread(buf2, 2, bufsize, inFile2);
+  int ret1 = fread(buf1, 2, bufsize, inFile1);
+  int ret2 = fread(buf2, 2, bufsize, inFile2);
   fclose(inFile1);
   fclose(inFile2);
+  if (ret1 < bufsize || ret2 < bufsize)
+  {
+    fprintf(stderr, "Error reading file\n");
+    exit(-4);
+  }
 
   // See how closely file contents match
   int k;
