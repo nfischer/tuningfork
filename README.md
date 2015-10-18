@@ -1,6 +1,9 @@
 tuningfork
 ==========
 
+[![Build Status](https://travis-ci.org/nfischer/tuningfork.svg?branch=master)]
+(https://travis-ci.org/nfischer/tuningfork)
+
 Generates a single-tone .wav file of specified duration, frequency, and
 file name.
 
