@@ -27,7 +27,7 @@ int compareFileSizes(char* fname1, char* fname2, int* buf)
   return buf1.st_size - buf2.st_size;
 }
 
-const int BUFSIZE_LIMIT = 2 << 28; // 256M items, so 512MB of RAM
+const int BUFSIZE_LIMIT = 0x20000000; // 512MB of RAM, which is 256M values
 const double THRESHOLD = 1.0; // arbitrary threshold
 const int SAMPLE_RATE = 44100;
 
