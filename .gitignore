@@ -9,8 +9,8 @@
 *.wav
 tf
 tf.exe
+diffWaveFiles
 
 *.o
 
 *.diff
-test*
