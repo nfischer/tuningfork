@@ -208,7 +208,7 @@ void genFile(double freq, double duration, char* fname) {
     /////////////////////////
     // Generate data subchunk
     /////////////////////////
-    int numSamples = SAMPLE_RATE * duration;
+    int numSamples = 2 * SAMPLE_RATE * duration;
 
     // Generate a lookup table for samples
     // We can evaluate any value over an entire period using just the first quadrant
