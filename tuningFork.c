@@ -47,19 +47,35 @@ int main() {
     */
 
     // get user input
+    int hasInputErrors = 0;
     printf("Input desired frequency (Hz): ");
-    scanf("%lf", &freq);
+    if (scanf("%lf", &freq) != 1)
+    {
+      hasInputErrors = 1;
+    }
     printf("Input desired duration (sec): ");
-    scanf("%lf", &duration);
+    if (scanf("%lf", &duration) != 1)
+    {
+      hasInputErrors = 1;
+    }
     printf("Enter desired file name: ");
     // scanf("\n%[^\n]s", fname);
+    if (hasInputErrors)
+    {
+      fprintf(stderr, "Error reading user input\n");
+      exit(1);
+    }
 
     // throw out everything up until newline
     char garbageChar;
     for (garbageChar = getchar(); garbageChar != '\n'; garbageChar = getchar()) continue;
 
     // read in name (with buffer protection)
-    fgets(fname, MAX_NAME_LEN, stdin);
+    if (fgets(fname, MAX_NAME_LEN, stdin) == NULL)
+    {
+      fprintf(stderr, "Error reading user input\n");
+      exit(1);
+    }
 
     /* Check for valid input values
         MIN_FREQ = 0
