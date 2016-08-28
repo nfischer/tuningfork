@@ -48,24 +48,12 @@ Enter desired file name: a.wav
 $
 ```
 
-### Using the `tune` bash script
-
-Example:
-
-```
-$ ./tune -n "other.wav" # no output to terminal
-```
-
-This script interfaces with the tf executable file. This script, without
-options, will create a file named "A440.wav" that has duration 10 seconds
-and frequency A=440Hz.
-
 You can change the default name, frequency, and/or duration with the
 following options:
 
-| Option         | Description           | Default    |
-| -------------- | --------------------- | ---------- |
-| `-f`           | Specify frequency     | 440Hz      |
-| `-d`           | Specify time duration | 10 sec     |
-| `-n`           | Specify file name     | "A440.wav" |
-| `-h`, `--help` | Display the help menu |            |
+| Option             | Description           | Default    |
+| ------------------ | --------------------- | ---------- |
+| `-f`, `--freq`     | Specify frequency     | 440Hz      |
+| `-d`, `--duration` | Specify time duration | 10 sec     |
+| `-n`, `--name`     | Specify file name     | "A440.wav" |
+| `-h`, `--help`     | Display the help menu |            |

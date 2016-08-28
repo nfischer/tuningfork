@@ -31,9 +31,25 @@ const double PI = 3.141592653589793; // this is the max precision supported
 void genFile(double freq, double time, char* fname);
 void checkInputFormat(double freq, double duration, char* fname);
 
-int main() {
-  double freq, duration;
+void usage(int fd) {
+  char *message = "Usage: tf [OPTION]...\n\
+\n\
+Creates a .wav file with single frequency\n\
+\n\
+OPTIONS:\n\
+  -f, --freq      specify frequency (default = 440Hz)\n\
+  -d, --duration  specify time duration (default = 10s)\n\
+  -n, --name      specify file name (default = A440.wav)\n\
+  -h, --help      display this help menu";
+  fprintf(fd == 1 ? stdout : stderr, "%s\n", message);
+  return;
+}
+
+int main(int argc, char** argv) {
+  double freq = -1;
+  double duration = -1;;
   char fname[MAX_NAME_LEN];
+  fname[0] = '\0';
   /*
     255 characters is the longest file name supported on Linux We *should*
     however support longer names, since this also permits paths to be written,
@@ -43,31 +59,70 @@ int main() {
     should clearly be fixed.
   */
 
-  // get user input
+  // fetch input from the CLI first
+  int k;
+  for (k = 1; k < argc; k++) {
+    char* option = argv[k];
+    if (strcmp(option, "--help") == 0 || strcmp(option, "-h") == 0) {
+      usage(1);
+      return 0;
+    } else if (k == argc-1) {
+      // not enough arguments
+      usage(2);
+      return 1;
+    }
+
+    if (strcmp(option, "--freq") == 0 || strcmp(option, "-f") == 0) {
+      sscanf(argv[++k], "%lf", &freq);
+    } else if (strcmp(option, "--duration") == 0 || strcmp(option, "-d") == 0) {
+      sscanf(argv[++k], "%lf", &duration);
+    } else if (strcmp(option, "--name") == 0 || strcmp(option, "-n") == 0) {
+      strcpy(fname, argv[++k]);
+    } else if (strcmp(option, "--help") == 0 || strcmp(option, "-h") == 0) {
+      usage(1);
+      return 0;
+    } else {
+      fprintf(stderr, "unknown option `%s`\n", option);
+      usage(2);
+      return 1;
+    }
+  }
+
+  int shouldEatCharacters = (freq == -1 || duration == -1);
+
+  // get user input for remaining values
   int hasInputErrors = 0;
-  printf("Input desired frequency (Hz): ");
-  if (scanf("%lf", &freq) != 1) {
-    hasInputErrors = 1;
+  if (freq == -1) {
+    printf("Input desired frequency (Hz): ");
+    if (scanf("%lf", &freq) != 1) {
+      hasInputErrors = 1;
+    }
   }
-  printf("Input desired duration (sec): ");
-  if (scanf("%lf", &duration) != 1) {
-    hasInputErrors = 1;
-  }
-
-  printf("Enter desired file name: ");
-  if (hasInputErrors) {
-    fprintf(stderr, "Error reading user input\n");
-    exit(1);
+  if (duration == -1) {
+    printf("Input desired duration (sec): ");
+    if (scanf("%lf", &duration) != 1) {
+      hasInputErrors = 1;
+    }
   }
 
-  // throw out everything up until newline, then begin reading the name
-  char garbageChar;
-  for (garbageChar = getchar(); garbageChar != '\n'; garbageChar = getchar() );
+  if (shouldEatCharacters) {
+    // If we read any input already, throw out everything up until newline
+    char garbageChar;
+    for (garbageChar = getchar(); garbageChar != '\n'; garbageChar = getchar() );
+  }
 
-  // read in name (with buffer protection)
-  if (fgets(fname, MAX_NAME_LEN, stdin) == NULL) {
-    fprintf(stderr, "Error reading user input\n");
-    exit(1);
+  if (strcmp(fname, "") == 0) {
+    printf("Enter desired file name: ");
+    if (hasInputErrors) {
+      fprintf(stderr, "Error reading user input\n");
+      exit(1);
+    }
+
+    // read in name (with buffer protection)
+    if (fgets(fname, MAX_NAME_LEN, stdin) == NULL) {
+      fprintf(stderr, "Error reading user input\n");
+      exit(1);
+    }
   }
 
   /* Check for valid input values
