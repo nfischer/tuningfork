@@ -3,8 +3,7 @@
 # A shell script to interface with tuningFork.c
 
 
-function helpMenu
-{
+helpMenu() {
 # prints helpMenu output
 cat >&2 << HELPMESSAGE
 Usage: tune [OPTION]...

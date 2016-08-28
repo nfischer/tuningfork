@@ -23,7 +23,7 @@ fi
 echo "1 minute file"
 (time -p ./tune -d 60 -n 60sec.wav) 2>&1
 echo "10 minute file"
-out=`(time -p ./tune -d 600 -n 600sec.wav) 2>&1`
+out=$(time -p ./tune -d 600 -n 600sec.wav 2>&1)
 echo "$out"
 lastTime=$(echo "$out" | grep 'real')
 lastTime=$(echo "${lastTime}" | sed 's/^.* \([0-9]\+\).*$/\1/')
