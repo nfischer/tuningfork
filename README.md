@@ -1,24 +1,22 @@
-tuningfork
-==========
+# TuningFork
 
-[![Build Status](https://travis-ci.org/nfischer/tuningfork.svg?branch=master)]
-(https://travis-ci.org/nfischer/tuningfork)
+[![Travis](https://img.shields.io/travis/nfischer/tuningfork.svg?style=flat-square)](https://travis-ci.org/nfischer/tuningfork)
 
 Generates a single-tone .wav file of specified duration, frequency, and
 file name.
 
-Build
------
+## Install
 
-To build our project, please use a make command. The compile script is
-deprecated.
-
-```
-$ make
+```bash
+$ git clone https://github.com/nfischer/tuningfork.git
+$ cd tuningfork/
+$ make # this creates the binary
 ```
 
-Details
--------
+From there, you'll have to copy the binary manually to your `PATH`, or just use
+a full path to the project location.
+
+## Details
 
 ### tuningFork.c
 
@@ -36,10 +34,9 @@ bumped up performance a great deal. Now, on some systems, it can generate a
 6000 second (100 minute) .wav file in under 15 seconds (under 3 on some
 solid state drives). You can benchmark our program yourself!
 
-Usage
------
+## Usage
 
-### Using the executable *tf*
+### Using the `tf` binary
 
 Example prompts and input:
 
@@ -51,9 +48,7 @@ Enter desired file name: a.wav
 $
 ```
 
-All the above is fairly self explanatory
-
-### Using the *tune* bash script
+### Using the `tune` bash script
 
 Example:
 
@@ -68,9 +63,9 @@ and frequency A=440Hz.
 You can change the default name, frequency, and/or duration with the
 following options:
 
-```
--f                specify frequency (default = 440Hz)
--d                specify time duration (default = 10s)
--n                specify file name (default = A440.wav)
--h, --help        display this help menu
-```
+| Option         | Description           | Default    |
+| -------------- | --------------------- | ---------- |
+| `-f`           | Specify frequency     | 440Hz      |
+| `-d`           | Specify time duration | 10 sec     |
+| `-n`           | Specify file name     | "A440.wav" |
+| `-h`, `--help` | Display the help menu |            |
