@@ -2,7 +2,7 @@
 
 [![Travis](https://img.shields.io/travis/nfischer/tuningfork.svg?style=flat-square)](https://travis-ci.org/nfischer/tuningfork)
 
-Generates a single-tone .wav file of specified duration, frequency, and
+Generates a single-tone `.wav` file of specified duration, frequency, and
 file name.
 
 ## Install
@@ -20,32 +20,33 @@ a full path to the project location.
 
 ### tuningFork.c
 
-The main file is tuningFork.c, a C file designed to create a .wav file of
-specified duration, frequency, and filename. This takes user input for
-these parameters from a prompt, checks for valid input, and then creates
-the file if all parameters are valid.
+The main file is `tuningFork.c`, a C file designed to create a `.wav` file of
+specified duration, frequency, and filename. This takes user input for these
+parameters from a prompt, checks for valid input, and then creates the file if
+all parameters are valid.
 
-The .wav file is stored in memory until the file is written in order to
+The `.wav` file is stored in memory until the file is written in order to
 improve file I/O, so don't generate large files on systems where RAM is a
 limitation.
 
-Recently, a lookup table was added to minimize sin computations. This
-bumped up performance a great deal. Now, on some systems, it can generate a
-6000 second (100 minute) .wav file in under 15 seconds (under 3 on some
-solid state drives). You can benchmark our program yourself!
+Recently, a lookup table was added to minimize sin computations. This bumped up
+performance a great deal. Now, on some systems, it can generate a 6000 second
+(100 minute) `.wav` file in under 15 seconds (under 3 on some solid state
+drives). You can benchmark our program yourself!
 
 ## Usage
 
-### Using the `tf` binary
-
 Example prompts and input:
 
-```
-$ ./tf
+```bash
+$ make # create the ./tf binary
+$ ./tf # be completely interactive...
 Input desired frequency (Hz): 440
 Input desired duration (sec): 10
-Enter desired file name: a.wav
-$
+Enter desired file name: first.wav
+$ ./tf -d 15 -f 220 # pass some options...
+Enter desired file name: second.wav
+$ ./tf --default # or use all default values (see below)
 ```
 
 You can change the default name, frequency, and/or duration with the

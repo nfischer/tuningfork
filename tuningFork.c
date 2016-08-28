@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     if (strcmp(option, "--help") == 0 || strcmp(option, "-h") == 0) {
       usage(1);
       return 0;
-    } else if (k == argc-1) {
+    } else if (strcmp(option, "--default") != 0 && k == argc-1) {
       // not enough arguments
       usage(2);
       return 1;
@@ -78,9 +78,15 @@ int main(int argc, char** argv) {
       sscanf(argv[++k], "%lf", &duration);
     } else if (strcmp(option, "--name") == 0 || strcmp(option, "-n") == 0) {
       strcpy(fname, argv[++k]);
+      strcat(fname, "\n"); // expects a newline on the end
     } else if (strcmp(option, "--help") == 0 || strcmp(option, "-h") == 0) {
       usage(1);
       return 0;
+    } else if (strcmp(option, "--defaults") == 0 || strcmp(option, "--default") == 0) {
+      printf("defaults\n");
+      freq = 440;
+      duration = 10;
+      strcpy(fname, "A440.wav\n"); // expects a newline on the end
     } else {
       fprintf(stderr, "unknown option `%s`\n", option);
       usage(2);
