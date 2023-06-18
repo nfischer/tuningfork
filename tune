@@ -2,7 +2,6 @@
 
 # A shell script to interface with tuningFork.c
 
-
 helpMenu() {
 # prints helpMenu output
 cat >&2 << HELPMESSAGE
@@ -14,6 +13,7 @@ OPTIONS:
   -f                specify frequency (default = 440Hz)
   -d                specify time duration (default = 10s)
   -n                specify file name (default = A440.wav)
+  -p                play the .wav file (requires VLC)
   -h, --help        display this help menu
 HELPMESSAGE
 } # call exit(1) after function call
@@ -40,7 +40,9 @@ if [ "$1" == "--help" ]; then
 fi
 # possibly change variables
 
-while getopts "hf:d:n:" OPTION; do
+play_file=false
+
+while getopts "hf:d:n:p" OPTION; do
   case $OPTION in
     h)
       helpMenu
@@ -54,6 +56,9 @@ while getopts "hf:d:n:" OPTION; do
       ;;
     n)
       fname=$OPTARG
+      ;;
+    p)
+      play_file=true
       ;;
     ?)
       helpMenu # call funciton
@@ -70,5 +75,12 @@ echoString="${freq}\n${duration}\n${fname}\n"
 # -en interprets escape sequences and ensures only 1 newline at end
 # redirect output to black hole
 echo -en "${echoString}" | ./tf >/dev/null
+
+if [[ "${play_file}" == "true" ]]; then
+  # vlc will play these "files" in order. "vlc://quit" is a special instruction
+  # to exit once we reach this item in the list. Otherwise vlc will stay open
+  # but not do anything.
+  cvlc "${fname}" "vlc://quit"
+fi
 
 exit 0
