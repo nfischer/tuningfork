@@ -28,8 +28,8 @@ const int MAX_NAME_LEN = 255;
 
 const double PI = 3.141592653589793; // this is the max precision supported
 
-void genFile(double freq, double time, char* fname);
-void checkInputFormat(double freq, double duration, char* fname);
+void genFile(double freq, double time, char* fname, char* channel);
+void checkInputFormat(double freq, double duration, char* fname, char* channel);
 
 void usage(int fd) {
   char *message = "Usage: tf [OPTION]...\n\
@@ -37,10 +37,11 @@ void usage(int fd) {
 Creates a .wav file with single frequency\n\
 \n\
 OPTIONS:\n\
-  -f, --freq      specify frequency (default = 440Hz)\n\
-  -d, --duration  specify time duration (default = 10s)\n\
-  -n, --name      specify file name (default = A440.wav)\n\
-  -h, --help      display this help menu";
+  -f, --freq {NUM}                  specify frequency (default = 440Hz)\n\
+  -d, --duration {NUM}              specify time duration (default = 10s)\n\
+  -n, --name {FILE}                 specify file name (default = A440.wav)\n\
+  -c, --channel {both,left,right}   specify only left or right channel (default = both)\n\
+  -h, --help                        display this help menu";
   fprintf(fd == 1 ? stdout : stderr, "%s\n", message);
   return;
 }
@@ -49,6 +50,7 @@ int main(int argc, char** argv) {
   double freq = -1;
   double duration = -1;;
   char fname[MAX_NAME_LEN];
+  char channel[MAX_NAME_LEN];
   fname[0] = '\0';
   /*
     255 characters is the longest file name supported on Linux We *should*
@@ -79,6 +81,8 @@ int main(int argc, char** argv) {
     } else if (strcmp(option, "--name") == 0 || strcmp(option, "-n") == 0) {
       strcpy(fname, argv[++k]);
       strcat(fname, "\n"); // expects a newline on the end
+    } else if (strcmp(option, "--channel") == 0 || strcmp(option, "-c") == 0) {
+      strcpy(channel, argv[++k]);
     } else if (strcmp(option, "--help") == 0 || strcmp(option, "-h") == 0) {
       usage(1);
       return 0;
@@ -110,6 +114,9 @@ int main(int argc, char** argv) {
       hasInputErrors = 1;
     }
   }
+  if (strcmp(channel, "") == 0) {
+    strcpy(channel, "both");
+  }
 
   if (shouldEatCharacters) {
     // If we read any input already, throw out everything up until newline
@@ -139,16 +146,16 @@ int main(int argc, char** argv) {
     MAX_DURATION = 60 * 100 s = 100 minutes
   */
 
-  checkInputFormat(freq, duration, fname);
+  checkInputFormat(freq, duration, fname, channel);
 
   // Generate the file
-  genFile(freq, duration, fname);
+  genFile(freq, duration, fname, channel);
 
   return 0;
 }
 
 
-void checkInputFormat(double freq, double duration, char* fname)
+void checkInputFormat(double freq, double duration, char* fname, char* channel)
 {
   /* Check for valid input values
 
@@ -185,6 +192,13 @@ void checkInputFormat(double freq, double duration, char* fname)
     shouldExit = 1;
   }
 
+  if (strcmp(channel, "both") != 0 &&
+      strcmp(channel, "left") != 0 &&
+      strcmp(channel, "right") != 0) {
+    fprintf(stderr,"ERROR: channel should be {both|left|right}\n");
+    shouldExit = 1;
+  }
+
   // Catches the zero byte in the file name
 
   // exit with proper status
@@ -214,7 +228,7 @@ void checkInputFormat(double freq, double duration, char* fname)
   return;
 }
 
-void genFile(double freq, double duration, char* fname)
+void genFile(double freq, double duration, char* fname, char* channel)
 {
   /*
     Writing to the file is bit-count specific, so size-specific types
@@ -222,6 +236,19 @@ void genFile(double freq, double duration, char* fname)
   */
 
   const int SAMPLE_RATE = 44100;
+
+  int output_left_channel = 1;
+  int output_right_channel = 1;
+  if (strcmp(channel, "both") == 0) {
+    output_left_channel = 1;
+    output_right_channel = 1;
+  } else if (strcmp(channel, "left") == 0) {
+    output_left_channel = 1;
+    output_right_channel = 0;
+  } else if (strcmp(channel, "right") == 0) {
+    output_left_channel = 0;
+    output_right_channel = 1;
+  }
 
   ///////////////////////////
   // Calculate subchunk2Size
@@ -311,8 +338,10 @@ void genFile(double freq, double duration, char* fname)
 
     /* write two samples to array */
     int j = i*2;
-    dataArr[j] = sample;
-    dataArr[j+1] = sample;
+    int16_t left_channel = output_left_channel ? sample : 0;
+    int16_t right_channel = output_right_channel ? sample : 0;
+    dataArr[j] = left_channel;
+    dataArr[j+1] = right_channel;
 
     periodIndex++;
     if ( periodIndex >= tableSize) {

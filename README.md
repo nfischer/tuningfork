@@ -52,9 +52,10 @@ $ ./tf --default # or use all default values (see below)
 You can change the default name, frequency, and/or duration with the
 following options:
 
-| Option             | Description           | Default    |
-| ------------------ | --------------------- | ---------- |
-| `-f`, `--freq`     | Specify frequency     | 440Hz      |
-| `-d`, `--duration` | Specify time duration | 10 sec     |
-| `-n`, `--name`     | Specify file name     | "A440.wav" |
-| `-h`, `--help`     | Display the help menu |            |
+| Option             | Description                | Default    |
+| ------------------ | -------------------------- | ---------- |
+| `-f`, `--freq`     | Specify frequency          | 440Hz      |
+| `-d`, `--duration` | Specify time duration      | 10 sec     |
+| `-n`, `--name`     | Specify file name          | "A440.wav" |
+| `-c`, `--channel`  | Specify left/right channel | "both"     |
+| `-h`, `--help`     | Display the help menu      |            |

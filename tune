@@ -10,10 +10,11 @@ Usage: tune [OPTION]...
 Creates a .wav file with single frequency
 
 OPTIONS:
-  -f                specify frequency (default = 440Hz)
-  -d                specify time duration (default = 10s)
-  -n                specify file name (default = A440.wav)
+  -f {NUM}          specify frequency (default = 440Hz)
+  -d {NUM}          specify time duration (default = 10s)
+  -n {FILE}         specify file name (default = A440.wav)
   -p                play the .wav file (requires VLC)
+  -c {left,right}   specify only left or right channel (default = both)
   -h, --help        display this help menu
 HELPMESSAGE
 } # call exit(1) after function call
@@ -40,9 +41,10 @@ if [ "$1" == "--help" ]; then
 fi
 # possibly change variables
 
-play_file=false
+play_file="false"
+channel="both"
 
-while getopts "hf:d:n:p" OPTION; do
+while getopts "hf:d:n:c:p" OPTION; do
   case $OPTION in
     h)
       helpMenu
@@ -58,23 +60,25 @@ while getopts "hf:d:n:p" OPTION; do
       fname=$OPTARG
       ;;
     p)
-      play_file=true
+      play_file="true"
+      ;;
+    c)
+      channel="$OPTARG"
       ;;
     ?)
-      helpMenu # call funciton
+      helpMenu
       exit 1
       ;;
   esac
 done
 
+tuning_fork_args=()
+tuning_fork_args+=(-f "${freq}")
+tuning_fork_args+=(-d "${duration}")
+tuning_fork_args+=(-n "${fname}")
+tuning_fork_args+=(-c "${channel}")
 
-
-# output variables to stdout piped to ./tf
-echoString="${freq}\n${duration}\n${fname}\n"
-
-# -en interprets escape sequences and ensures only 1 newline at end
-# redirect output to black hole
-echo -en "${echoString}" | ./tf >/dev/null
+./tf "${tuning_fork_args[@]}" >/dev/null
 
 if [[ "${play_file}" == "true" ]]; then
   # vlc will play these "files" in order. "vlc://quit" is a special instruction
